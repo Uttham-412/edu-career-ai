@@ -57,13 +57,6 @@ export function DashboardStats() {
       icon: <Target className="w-4 h-4" />,
       trend: "up" as const,
     },
-    {
-      title: "Interview Calls",
-      value: "3",
-      change: "2 pending responses",
-      icon: <TrendingUp className="w-4 h-4" />,
-      trend: "neutral" as const,
-    },
   ];
 
   return (
