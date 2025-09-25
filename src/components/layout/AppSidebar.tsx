@@ -5,6 +5,7 @@ import {
   FileText, 
   Briefcase, 
   Bell, 
+  Calendar,
   GraduationCap,
   User
 } from "lucide-react";
@@ -28,6 +29,12 @@ const navigation = [
     url: "/", 
     icon: LayoutDashboard,
     description: "Your career overview" 
+  },
+  { 
+    title: "Timetable", 
+    url: "/timetable", 
+    icon: Calendar,
+    description: "Smart schedule management" 
   },
   { 
     title: "Resume", 
