@@ -6,8 +6,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Download, Plus, X, FileText, Zap } from "lucide-react";
+import { Download, Plus, X, FileText, Zap, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ResumeTemplate1 from "@/components/resume/ResumeTemplate1";
+import ResumeTemplate2 from "@/components/resume/ResumeTemplate2";
+import ResumeTemplate3 from "@/components/resume/ResumeTemplate3";
+import ResumeTemplate4 from "@/components/resume/ResumeTemplate4";
 
 interface Skill {
   id: string;
@@ -31,6 +35,9 @@ interface Certification {
 
 export default function Resume() {
   const { toast } = useToast();
+  const [selectedTemplate, setSelectedTemplate] = useState<number>(1);
+  const [showTemplateSelection, setShowTemplateSelection] = useState(false);
+  
   const [skills, setSkills] = useState<Skill[]>([
     { id: "1", name: "React.js", level: "Advanced" },
     { id: "2", name: "JavaScript", level: "Advanced" },
@@ -100,10 +107,32 @@ export default function Resume() {
   };
 
   const generateResume = () => {
+    setShowTemplateSelection(true);
     toast({
-      title: "Resume Updated!",
-      description: "Your resume preview has been refreshed with latest changes.",
+      title: "Templates Ready!",
+      description: "Choose from 4 different resume templates below.",
     });
+  };
+
+  const templates = [
+    { id: 1, name: "Classic", description: "Traditional and professional" },
+    { id: 2, name: "Modern Sidebar", description: "Clean with sidebar layout" },
+    { id: 3, name: "Timeline", description: "Timeline style with accent colors" },
+    { id: 4, name: "Creative", description: "Modern gradient design" },
+  ];
+
+  const renderSelectedTemplate = () => {
+    const templateProps = { skills, projects, certifications };
+    switch (selectedTemplate) {
+      case 2:
+        return <ResumeTemplate2 {...templateProps} />;
+      case 3:
+        return <ResumeTemplate3 {...templateProps} />;
+      case 4:
+        return <ResumeTemplate4 {...templateProps} />;
+      default:
+        return <ResumeTemplate1 {...templateProps} />;
+    }
   };
 
   return (
@@ -120,7 +149,7 @@ export default function Resume() {
         <div className="flex items-center gap-3">
           <Button onClick={generateResume} variant="outline" className="gap-2">
             <Zap className="w-4 h-4" />
-            Auto-Generate
+            Choose Template
           </Button>
           <Button onClick={downloadResume} className="gap-2">
             <Download className="w-4 h-4" />
@@ -246,57 +275,7 @@ export default function Resume() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="bg-white border p-6 rounded-lg shadow-sm min-h-[600px]">
-                {/* Resume Header */}
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">John Doe</h2>
-                  <p className="text-gray-600">Frontend Developer</p>
-                  <p className="text-sm text-gray-500">
-                    john.doe@email.com • +91 9876543210 • LinkedIn
-                  </p>
-                </div>
-
-                {/* Skills */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Skills</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {skills.map((skill) => (
-                      <span key={skill.id} className="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded">
-                        {skill.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Projects */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Projects</h3>
-                  <div className="space-y-3">
-                    {projects.map((project) => (
-                      <div key={project.id}>
-                        <h4 className="font-medium text-gray-900">{project.title}</h4>
-                        <p className="text-sm text-gray-600">{project.description}</p>
-                        <p className="text-xs text-gray-500">
-                          Technologies: {project.technologies.join(", ")}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Certifications */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Certifications</h3>
-                  <div className="space-y-2">
-                    {certifications.map((cert) => (
-                      <div key={cert.id}>
-                        <h4 className="font-medium text-gray-900">{cert.name}</h4>
-                        <p className="text-sm text-gray-600">{cert.issuer} • {cert.date}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              {renderSelectedTemplate()}
 
               <div className="mt-4 p-3 bg-muted/50 rounded-lg">
                 <p className="text-xs text-muted-foreground text-center">
@@ -307,6 +286,58 @@ export default function Resume() {
           </Card>
         </div>
       </div>
+
+      {/* Template Selection Section */}
+      {showTemplateSelection && (
+        <div className="mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Choose Your Resume Template</CardTitle>
+              <p className="text-muted-foreground">
+                Select from 4 professionally designed templates
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {templates.map((template) => (
+                  <div
+                    key={template.id}
+                    className={`relative cursor-pointer transition-all ${
+                      selectedTemplate === template.id
+                        ? "ring-2 ring-primary"
+                        : "hover:ring-1 hover:ring-muted-foreground"
+                    }`}
+                    onClick={() => setSelectedTemplate(template.id)}
+                  >
+                    {selectedTemplate === template.id && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center z-10">
+                        <Check className="w-4 h-4 text-primary-foreground" />
+                      </div>
+                    )}
+                    
+                    <Card className="overflow-hidden">
+                      <CardContent className="p-0">
+                        <div className="aspect-[3/4] bg-muted/50 flex items-center justify-center relative">
+                          <div className="scale-50 origin-top-left w-[200%] h-[200%] absolute top-0 left-0">
+                            {template.id === 1 && <ResumeTemplate1 skills={skills} projects={projects} certifications={certifications} />}
+                            {template.id === 2 && <ResumeTemplate2 skills={skills} projects={projects} certifications={certifications} />}
+                            {template.id === 3 && <ResumeTemplate3 skills={skills} projects={projects} certifications={certifications} />}
+                            {template.id === 4 && <ResumeTemplate4 skills={skills} projects={projects} certifications={certifications} />}
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="font-semibold">{template.name}</h3>
+                          <p className="text-sm text-muted-foreground">{template.description}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
