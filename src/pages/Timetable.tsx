@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar, Clock, BookOpen, AlertTriangle, Target, Lightbulb } from "lucide-react";
+import { Calendar, Clock, BookOpen, Upload, Award, TrendingUp, FileText } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,133 +21,129 @@ interface DaySchedule {
   classes: ClassSlot[];
 }
 
-interface Recommendation {
+interface CertificationRecommendation {
   id: string;
-  type: 'study-time' | 'balance' | 'overlap' | 'exam-prep';
   title: string;
   description: string;
+  provider: string;
+  duration: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  relevantSubjects: string[];
   priority: 'high' | 'medium' | 'low';
-  icon: any;
 }
 
-const sampleTimetable: Record<string, DaySchedule[]> = {
-  'Year 1 - Sem 1': [
-    {
-      day: 'Monday',
-      date: '2024-01-15',
-      classes: [
-        { id: '1', subject: 'Mathematics I', professor: 'Dr. Smith', room: 'A101', time: '09:00', duration: 60, type: 'lecture', difficulty: 'hard' },
-        { id: '2', subject: 'Physics I', professor: 'Dr. Johnson', room: 'B203', time: '11:00', duration: 90, type: 'lecture', difficulty: 'medium' },
-        { id: '3', subject: 'Programming Lab', professor: 'Prof. Brown', room: 'Lab1', time: '14:00', duration: 120, type: 'lab', difficulty: 'medium' },
-      ]
-    },
-    {
-      day: 'Tuesday',
-      date: '2024-01-16',
-      classes: [
-        { id: '4', subject: 'Chemistry', professor: 'Dr. Wilson', room: 'C301', time: '09:00', duration: 60, type: 'lecture', difficulty: 'medium' },
-        { id: '5', subject: 'Engineering Graphics', professor: 'Prof. Davis', room: 'D401', time: '10:30', duration: 90, type: 'tutorial', difficulty: 'easy' },
-        { id: '6', subject: 'Mathematics Tutorial', professor: 'Dr. Smith', room: 'A102', time: '15:00', duration: 60, type: 'tutorial', difficulty: 'hard' },
-      ]
-    },
-    {
-      day: 'Wednesday',
-      date: '2024-01-17',
-      classes: [
-        { id: '7', subject: 'Physics Lab', professor: 'Dr. Johnson', room: 'Lab2', time: '09:00', duration: 180, type: 'lab', difficulty: 'medium' },
-        { id: '8', subject: 'Communication Skills', professor: 'Prof. Lee', room: 'E501', time: '14:00', duration: 60, type: 'lecture', difficulty: 'easy' },
-      ]
-    },
-    {
-      day: 'Thursday',
-      date: '2024-01-18',
-      classes: [
-        { id: '9', subject: 'Mathematics I', professor: 'Dr. Smith', room: 'A101', time: '09:00', duration: 60, type: 'lecture', difficulty: 'hard' },
-        { id: '10', subject: 'Chemistry Lab', professor: 'Dr. Wilson', room: 'Lab3', time: '11:00', duration: 120, type: 'lab', difficulty: 'medium' },
-        { id: '11', subject: 'Physics I', professor: 'Dr. Johnson', room: 'B203', time: '15:00', duration: 60, type: 'lecture', difficulty: 'medium' },
-      ]
-    },
-    {
-      day: 'Friday',
-      date: '2024-01-19',
-      classes: [
-        { id: '12', subject: 'Programming Fundamentals', professor: 'Prof. Brown', room: 'F601', time: '10:00', duration: 90, type: 'lecture', difficulty: 'medium' },
-        { id: '13', subject: 'Workshop Practice', professor: 'Mr. Taylor', room: 'Workshop', time: '14:00', duration: 180, type: 'lab', difficulty: 'easy' },
-      ]
-    }
-  ],
-  'Year 1 - Sem 2': [
-    {
-      day: 'Monday',
-      date: '2024-07-15',
-      classes: [
-        { id: '14', subject: 'Mathematics II', professor: 'Dr. Anderson', room: 'A201', time: '09:00', duration: 60, type: 'lecture', difficulty: 'hard' },
-        { id: '15', subject: 'Data Structures', professor: 'Prof. Garcia', room: 'G701', time: '11:00', duration: 90, type: 'lecture', difficulty: 'hard' },
-        { id: '16', subject: 'Electronics Lab', professor: 'Dr. Martinez', room: 'Lab4', time: '14:00', duration: 120, type: 'lab', difficulty: 'medium' },
-      ]
-    }
-  ]
-};
 
 export default function Timetable() {
-  const [selectedPeriod, setSelectedPeriod] = useState<string>('Year 1 - Sem 1');
-  const [viewMode, setViewMode] = useState<'week' | 'day'>('week');
+  const [uploadedTimetable, setUploadedTimetable] = useState<DaySchedule[] | null>(null);
+  const [dragActive, setDragActive] = useState(false);
 
-  const currentSchedule = sampleTimetable[selectedPeriod] || [];
+  const handleFileUpload = (file: File) => {
+    // In a real implementation, you would parse the uploaded file
+    // For now, we'll simulate parsing and create sample data
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      // Simulate parsing timetable data
+      const sampleSchedule: DaySchedule[] = [
+        {
+          day: 'Monday',
+          date: '2024-01-15',
+          classes: [
+            { id: '1', subject: 'Data Structures', professor: 'Dr. Smith', room: 'A101', time: '09:00', duration: 60, type: 'lecture', difficulty: 'hard' },
+            { id: '2', subject: 'Machine Learning', professor: 'Dr. Johnson', room: 'B203', time: '11:00', duration: 90, type: 'lecture', difficulty: 'hard' },
+            { id: '3', subject: 'Web Development', professor: 'Prof. Brown', room: 'Lab1', time: '14:00', duration: 120, type: 'lab', difficulty: 'medium' },
+          ]
+        },
+        {
+          day: 'Tuesday',
+          date: '2024-01-16',
+          classes: [
+            { id: '4', subject: 'Database Systems', professor: 'Dr. Wilson', room: 'C301', time: '09:00', duration: 60, type: 'lecture', difficulty: 'medium' },
+            { id: '5', subject: 'Software Engineering', professor: 'Prof. Davis', room: 'D401', time: '10:30', duration: 90, type: 'lecture', difficulty: 'medium' },
+          ]
+        }
+      ];
+      setUploadedTimetable(sampleSchedule);
+    };
+    reader.readAsText(file);
+  };
 
-  const generateRecommendations = (): Recommendation[] => {
-    const recommendations: Recommendation[] = [];
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
 
-    // Analyze heavy class days
-    const heavyDays = currentSchedule.filter(day => day.classes.length > 2);
-    if (heavyDays.length > 0) {
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(e.dataTransfer.files[0]);
+    }
+  };
+
+  const generateCertificationRecommendations = (): CertificationRecommendation[] => {
+    if (!uploadedTimetable) return [];
+
+    const allSubjects = uploadedTimetable.flatMap(day => day.classes.map(c => c.subject));
+    const recommendations: CertificationRecommendation[] = [];
+
+    // Analyze subjects and suggest relevant certifications
+    if (allSubjects.some(s => s.toLowerCase().includes('data') || s.toLowerCase().includes('machine learning'))) {
       recommendations.push({
         id: '1',
-        type: 'balance',
-        title: 'Heavy Class Days Detected',
-        description: `${heavyDays.map(d => d.day).join(', ')} have 3+ classes. Consider light study sessions on these days and intensive study on lighter days.`,
-        priority: 'high',
-        icon: AlertTriangle
+        title: 'Google Data Analytics Professional Certificate',
+        description: 'Perfect complement to your data-focused curriculum. Learn industry-standard tools like Tableau, R, and SQL.',
+        provider: 'Google via Coursera',
+        duration: '3-6 months',
+        difficulty: 'beginner',
+        relevantSubjects: allSubjects.filter(s => s.toLowerCase().includes('data') || s.toLowerCase().includes('machine')),
+        priority: 'high'
       });
     }
 
-    // Find best study slots
-    const lightDays = currentSchedule.filter(day => day.classes.length <= 2);
-    if (lightDays.length > 0) {
+    if (allSubjects.some(s => s.toLowerCase().includes('web') || s.toLowerCase().includes('programming'))) {
       recommendations.push({
         id: '2',
-        type: 'study-time',
-        title: 'Optimal Study Windows',
-        description: `${lightDays.map(d => d.day).join(', ')} are ideal for intensive study sessions. Schedule your toughest subjects during these times.`,
-        priority: 'medium',
-        icon: Target
+        title: 'AWS Certified Developer Associate',
+        description: 'Enhance your web development skills with cloud computing expertise. High demand in the job market.',
+        provider: 'Amazon Web Services',
+        duration: '2-3 months',
+        difficulty: 'intermediate',
+        relevantSubjects: allSubjects.filter(s => s.toLowerCase().includes('web') || s.toLowerCase().includes('programming')),
+        priority: 'high'
       });
     }
 
-    // Check for back-to-back difficult classes
-    currentSchedule.forEach(day => {
-      const hardClasses = day.classes.filter(c => c.difficulty === 'hard');
-      if (hardClasses.length > 1) {
-        recommendations.push({
-          id: `3-${day.day}`,
-          type: 'overlap',
-          title: `Challenging ${day.day}`,
-          description: `Multiple difficult subjects on ${day.day}. Pre-study the evening before and take short breaks between classes.`,
-          priority: 'high',
-          icon: Lightbulb
-        });
-      }
-    });
+    if (allSubjects.some(s => s.toLowerCase().includes('software') || s.toLowerCase().includes('engineering'))) {
+      recommendations.push({
+        id: '3',
+        title: 'Certified ScrumMaster (CSM)',
+        description: 'Learn agile project management methodologies that complement your software engineering studies.',
+        provider: 'Scrum Alliance',
+        duration: '2-4 weeks',
+        difficulty: 'beginner',
+        relevantSubjects: allSubjects.filter(s => s.toLowerCase().includes('software') || s.toLowerCase().includes('engineering')),
+        priority: 'medium'
+      });
+    }
 
-    // General exam prep tips
-    recommendations.push({
-      id: '4',
-      type: 'exam-prep',
-      title: 'Exam Preparation Strategy',
-      description: 'Use 2-3 hour gaps between classes for quick revision. Lab days are perfect for practical concept reinforcement.',
-      priority: 'medium',
-      icon: BookOpen
-    });
+    if (allSubjects.some(s => s.toLowerCase().includes('database') || s.toLowerCase().includes('sql'))) {
+      recommendations.push({
+        id: '4',
+        title: 'Microsoft Azure Database Administrator',
+        description: 'Specialize in database management with cloud technologies, perfect for your database coursework.',
+        provider: 'Microsoft',
+        duration: '3-4 months',
+        difficulty: 'intermediate',
+        relevantSubjects: allSubjects.filter(s => s.toLowerCase().includes('database')),
+        priority: 'medium'
+      });
+    }
 
     return recommendations;
   };
@@ -171,6 +167,15 @@ export default function Timetable() {
     }
   };
 
+  const getDifficultyBadgeColor = (difficulty: string) => {
+    switch (difficulty) {
+      case 'beginner': return 'bg-success text-success-foreground';
+      case 'intermediate': return 'bg-warning text-warning-foreground';
+      case 'advanced': return 'bg-destructive text-destructive-foreground';
+      default: return 'bg-muted text-muted-foreground';
+    }
+  };
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high': return 'border-l-4 border-l-destructive bg-destructive/5';
@@ -180,7 +185,7 @@ export default function Timetable() {
     }
   };
 
-  const recommendations = generateRecommendations();
+  const certificationRecommendations = generateCertificationRecommendations();
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -193,153 +198,203 @@ export default function Timetable() {
               Smart Timetable
             </h1>
             <p className="text-muted-foreground mt-1">
-              Intelligent schedule management with AI-powered recommendations
+              Upload your timetable to get personalized certification recommendations
             </p>
-          </div>
-          
-          <div className="flex gap-3">
-            <select
-              value={selectedPeriod}
-              onChange={(e) => setSelectedPeriod(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-primary"
-            >
-              {Object.keys(sampleTimetable).map(period => (
-                <option key={period} value={period}>{period}</option>
-              ))}
-            </select>
-            
-            <div className="flex rounded-lg border border-border overflow-hidden">
-              <Button
-                variant={viewMode === 'week' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('week')}
-                className="rounded-none"
-              >
-                Week View
-              </Button>
-              <Button
-                variant={viewMode === 'day' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('day')}
-                className="rounded-none"
-              >
-                Day View
-              </Button>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Timetable Display */}
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Clock className="w-5 h-5 text-primary" />
-            Weekly Schedule - {selectedPeriod}
-          </CardTitle>
-          <CardDescription>
-            Your complete class schedule with smart insights
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {currentSchedule.map((day) => (
-              <div key={day.day} className="border border-border rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-lg text-foreground">
-                    {day.day}
-                  </h3>
-                  <span className="text-sm text-muted-foreground">
-                    {day.date}
-                  </span>
-                </div>
-                
-                {day.classes.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <BookOpen className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                    <p>No classes scheduled</p>
-                  </div>
-                ) : (
-                  <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                    {day.classes.map((classItem) => (
-                      <div
-                        key={classItem.id}
-                        className="border border-border rounded-lg p-3 hover:shadow-md transition-shadow"
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-medium text-foreground text-sm">
-                            {classItem.subject}
-                          </h4>
-                          <Badge className={getDifficultyColor(classItem.difficulty)} variant="secondary">
-                            {classItem.difficulty}
-                          </Badge>
-                        </div>
-                        
-                        <div className="space-y-1 text-xs text-muted-foreground">
-                          <p>👨‍🏫 {classItem.professor}</p>
-                          <p>📍 {classItem.room}</p>
-                          <p>🕐 {classItem.time} ({classItem.duration}min)</p>
-                        </div>
-                        
-                        <div className="mt-2">
-                          <Badge className={getClassTypeColor(classItem.type)} variant="outline">
-                            {classItem.type}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+      {/* File Upload */}
+      {!uploadedTimetable ? (
+        <Card className="glass-card">
+          <CardContent className="p-8">
+            <div
+              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                dragActive
+                  ? 'border-primary bg-primary/5'
+                  : 'border-border hover:border-primary/50'
+              }`}
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDragOver={handleDrag}
+              onDrop={handleDrop}
+            >
+              <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg font-semibold mb-2">Upload Your Timetable</h3>
+              <p className="text-muted-foreground mb-4">
+                Drag and drop your timetable file here, or click to browse
+              </p>
+              <input
+                type="file"
+                accept=".pdf,.csv,.xlsx,.xls"
+                onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
+                className="hidden"
+                id="file-upload"
+              />
+              <label htmlFor="file-upload">
+                <Button variant="outline" className="cursor-pointer">
+                  <FileText className="w-4 h-4 mr-2" />
+                  Choose File
+                </Button>
+              </label>
+              <p className="text-xs text-muted-foreground mt-2">
+                Supported formats: PDF, CSV, Excel
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+        {/* Timetable Display */}
+        <Card className="glass-card">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-primary" />
+                  Your Uploaded Timetable
+                </CardTitle>
+                <CardDescription>
+                  Analyzed timetable with certification recommendations
+                </CardDescription>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* AI Recommendations */}
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Lightbulb className="w-5 h-5 text-primary" />
-            Smart Recommendations
-          </CardTitle>
-          <CardDescription>
-            AI-powered insights based on your timetable analysis
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2">
-            {recommendations.map((rec) => {
-              const IconComponent = rec.icon;
-              return (
-                <div
-                  key={rec.id}
-                  className={`rounded-lg p-4 ${getPriorityColor(rec.priority)} hover-lift`}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <IconComponent className="w-5 h-5 text-primary" />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setUploadedTimetable(null)}
+              >
+                Upload New
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {uploadedTimetable.map((day) => (
+                <div key={day.day} className="border border-border rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-lg text-foreground">
+                      {day.day}
+                    </h3>
+                    <span className="text-sm text-muted-foreground">
+                      {day.date}
+                    </span>
+                  </div>
+                  
+                  {day.classes.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <BookOpen className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                      <p>No classes scheduled</p>
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-medium text-foreground">
-                          {rec.title}
-                        </h4>
-                        <Badge variant="outline" className="text-xs">
-                          {rec.priority} priority
-                        </Badge>
+                  ) : (
+                    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                      {day.classes.map((classItem) => (
+                        <div
+                          key={classItem.id}
+                          className="border border-border rounded-lg p-3 hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex justify-between items-start mb-2">
+                            <h4 className="font-medium text-foreground text-sm">
+                              {classItem.subject}
+                            </h4>
+                            <Badge className={getDifficultyColor(classItem.difficulty)} variant="secondary">
+                              {classItem.difficulty}
+                            </Badge>
+                          </div>
+                          
+                          <div className="space-y-1 text-xs text-muted-foreground">
+                            <p>👨‍🏫 {classItem.professor}</p>
+                            <p>📍 {classItem.room}</p>
+                            <p>🕐 {classItem.time} ({classItem.duration}min)</p>
+                          </div>
+                          
+                          <div className="mt-2">
+                            <Badge className={getClassTypeColor(classItem.type)} variant="outline">
+                              {classItem.type}
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+        </>
+      )}
+
+      {/* Certification Recommendations */}
+      {uploadedTimetable && (
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Award className="w-5 h-5 text-primary" />
+              Recommended Certifications
+            </CardTitle>
+            <CardDescription>
+              AI-powered certification suggestions based on your subjects
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {certificationRecommendations.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <Award className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                <p>No specific recommendations available for your current subjects</p>
+              </div>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2">
+                {certificationRecommendations.map((cert) => (
+                  <div
+                    key={cert.id}
+                    className={`rounded-lg p-4 ${getPriorityColor(cert.priority)} hover-lift`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 rounded-lg bg-primary/10">
+                        <Award className="w-5 h-5 text-primary" />
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        {rec.description}
-                      </p>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-medium text-foreground">
+                            {cert.title}
+                          </h4>
+                          <Badge className={getDifficultyBadgeColor(cert.difficulty)} variant="secondary">
+                            {cert.difficulty}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          {cert.description}
+                        </p>
+                        <div className="space-y-1 text-xs">
+                          <div className="flex items-center gap-2">
+                            <TrendingUp className="w-3 h-3" />
+                            <span className="text-muted-foreground">Provider: {cert.provider}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-3 h-3" />
+                            <span className="text-muted-foreground">Duration: {cert.duration}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <BookOpen className="w-3 h-3" />
+                            <span className="text-muted-foreground">
+                              Relevant subjects: {cert.relevantSubjects.join(', ')}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="mt-3">
+                          <Badge variant="outline" className="text-xs">
+                            {cert.priority} priority
+                          </Badge>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
