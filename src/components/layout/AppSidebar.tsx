@@ -132,7 +132,10 @@ export function AppSidebar() {
 
         {/* User Profile at Bottom */}
         <div className="mt-auto p-4 border-t border-sidebar-border">
-          <div className="flex items-center gap-3">
+          <NavLink 
+            to="/student" 
+            className={`${getNavClasses('/student')} flex items-center gap-3 p-2 rounded-lg transition-colors`}
+          >
             <div className="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center">
               <User className="w-4 h-4 text-primary" />
             </div>
@@ -142,7 +145,7 @@ export function AppSidebar() {
                 <p className="text-xs text-muted-foreground">Final Year</p>
               </div>
             )}
-          </div>
+          </NavLink>
         </div>
       </SidebarContent>
     </Sidebar>
