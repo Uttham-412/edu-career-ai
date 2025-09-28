@@ -31,12 +31,6 @@ const navigation = [
     description: "Your career overview" 
   },
   { 
-    title: "Student", 
-    url: "/student", 
-    icon: User,
-    description: "Student profile management" 
-  },
-  { 
     title: "Timetable", 
     url: "/timetable", 
     icon: Calendar,
