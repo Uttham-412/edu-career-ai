@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "./components/layout/AppLayout";
 import { AuthProvider } from "./contexts/AuthContext";
 import Dashboard from "./pages/Dashboard";
+import Student from "./pages/Student";
 import Timetable from "./pages/Timetable";
 import Resume from "./pages/Resume";
 import Opportunities from "./pages/Opportunities";
@@ -30,6 +31,7 @@ const App = () => (
               <AppLayout>
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
+                  <Route path="/student" element={<Student />} />
                   <Route path="/timetable" element={<Timetable />} />
                   <Route path="/resume" element={<Resume />} />
                   <Route path="/opportunities" element={<Opportunities />} />
