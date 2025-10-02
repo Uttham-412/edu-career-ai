@@ -18,7 +18,6 @@ interface Profile {
   phone: string;
   date_of_birth: string;
   location: string;
-  occupation: string;
   company: string;
   bio: string;
   skills: string[];
@@ -35,7 +34,6 @@ const Account = () => {
     phone: "",
     date_of_birth: "",
     location: "",
-    occupation: "",
     company: "",
     bio: "",
     skills: [],
@@ -72,7 +70,6 @@ const Account = () => {
         phone: data.phone || "",
         date_of_birth: data.date_of_birth || "",
         location: data.location || "",
-        occupation: data.occupation || "",
         company: data.company || "",
         bio: data.bio || "",
         skills: data.skills || [],
@@ -212,25 +209,14 @@ const Account = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="occupation">Occupation</Label>
-                  <Input
-                    id="occupation"
-                    value={profile.occupation}
-                    onChange={(e) => setProfile({...profile, occupation: e.target.value})}
-                    placeholder="Software Engineer"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="company">Company</Label>
-                  <Input
-                    id="company"
-                    value={profile.company}
-                    onChange={(e) => setProfile({...profile, company: e.target.value})}
-                    placeholder="Company Name"
-                  />
-                </div>
+              <div>
+                <Label htmlFor="company">Company</Label>
+                <Input
+                  id="company"
+                  value={profile.company}
+                  onChange={(e) => setProfile({...profile, company: e.target.value})}
+                  placeholder="Company Name"
+                />
               </div>
 
               <div>
