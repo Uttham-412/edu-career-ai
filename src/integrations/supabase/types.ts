@@ -14,51 +14,18 @@ export type Database = {
   }
   public: {
     Tables: {
-      certifications: {
-        Row: {
-          created_at: string
-          date: string
-          id: string
-          issuer: string
-          name: string
-          skills_learned: string[] | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          date: string
-          id?: string
-          issuer: string
-          name: string
-          skills_learned?: string[] | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          date?: string
-          id?: string
-          issuer?: string
-          name?: string
-          skills_learned?: string[] | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           bio: string | null
           company: string | null
           created_at: string
-          "current educationn": string | null
           date_of_birth: string | null
           experience_level: string | null
           first_name: string | null
           id: string
           last_name: string | null
           location: string | null
+          occupation: string | null
           phone: string | null
           preferred_work_type: string | null
           skills: string[] | null
@@ -69,13 +36,13 @@ export type Database = {
           bio?: string | null
           company?: string | null
           created_at?: string
-          "current educationn"?: string | null
           date_of_birth?: string | null
           experience_level?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
           location?: string | null
+          occupation?: string | null
           phone?: string | null
           preferred_work_type?: string | null
           skills?: string[] | null
@@ -86,46 +53,16 @@ export type Database = {
           bio?: string | null
           company?: string | null
           created_at?: string
-          "current educationn"?: string | null
           date_of_birth?: string | null
           experience_level?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
           location?: string | null
+          occupation?: string | null
           phone?: string | null
           preferred_work_type?: string | null
           skills?: string[] | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      projects: {
-        Row: {
-          created_at: string
-          description: string
-          id: string
-          technologies: string[]
-          title: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          description: string
-          id?: string
-          technologies?: string[]
-          title: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          description?: string
-          id?: string
-          technologies?: string[]
-          title?: string
           updated_at?: string
           user_id?: string
         }
